@@ -66,80 +66,35 @@ app.get("/todos/:id", (req, res) => {
     });
 });
 
+app.delete("/todos/:id", (req, res) => {
+  // get the id
+  var id = req.params.id;
+
+  //validate the id -> not valid? return 404
+  if (!ObjectID.isValid(id)) {
+    return res.status(404).send();
+  }
+  // remove todo by id
+  // success
+  // if no doc, send 404
+  // if doc, send doc back with 200
+  // error
+  // 400 with empty body
+  Todo.findByIdAndRemove(id)
+    .then(todo => {
+      if (!todo) {
+        return res.status(404).send();
+      }
+
+      res.send(todo);
+    })
+    .catch(e => {
+      res.status(400).send();
+    });
+});
+
 app.listen(port, () => {
-  console.log(`Started up at port ${port}");
+  console.log(`Started up at port ${port}`);
 });
 
 module.exports = { app };
-
-// var { mongoose } = require("./db/mongoose");
-
-// var Todo = mongoose.model("Todo", {
-//   text: {
-//     type: String,
-//     required: true,
-//     minlength: 1,
-//     trim: true
-//   },
-//   completed: {
-//     type: Boolean,
-//     default: false
-//   },
-//   completedAt: {
-//     type: Number,
-//     default: null
-//   }
-// });
-
-// var newTodo = new Todo({
-//   text: "Cook dinner"
-// });
-
-// newTodo.save().then(
-//   doc => {
-//     console.log("Saved todo", doc);
-//   },
-//   e => {
-//     console.log("Unable to save todo");
-//   }
-// );
-
-// var otherTodo = new Todo({
-//   text: "   Edit this text   "
-//   // text: "Feed Floki",
-//   // completed: true,
-//   // completedAt: 123
-// });
-
-// otherTodo.save().then(
-//   doc => {
-//     console.log(JSON.stringify(doc, undefined, 2));
-//   },
-//   e => {
-//     console.log("Unable to save", e);
-//   }
-// );
-
-// User
-// email - require - trim it -set type -set min length of 1
-// var User = mongoose.model("User", {
-//   email: {
-//     type: String,
-//     required: true,
-//     trim: true,
-//     minlength: 1
-//   }
-// });
-
-// var user = new User({
-//   email: "sabrina.moraru@gmail.com    "
-// });
-
-// user.save().then(
-//   () => {
-//     console.log("User saved", doc);
-//   },
-//   e => {
-//     console.log("Unable to save user", e);
-//   }
-// );
